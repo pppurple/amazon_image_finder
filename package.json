@@ -1,0 +1,23 @@
+{
+  "name": "amazon_image_finder",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "./node_modules/.bin/electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pppurple/amazon_image_finder.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pppurple/amazon_image_finder/issues"
+  },
+  "homepage": "https://github.com/pppurple/amazon_image_finder#readme",
+  "devDependencies": {
+    "electron": "^4.1.4"
+  }
+}
