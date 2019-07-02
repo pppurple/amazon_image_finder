@@ -39,6 +39,7 @@ ipcRenderer.on('reply', (event, resultItems) => {
       }
     }
     const td = document.createElement("td")
+    td.setAttribute("width", "25%")
 
     // artist name
     const artist = item.artist
