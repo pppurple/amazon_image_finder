@@ -18,12 +18,14 @@
   },
   "homepage": "https://github.com/pppurple/amazon_image_finder#readme",
   "devDependencies": {
-    "electron": "^4.1.4"
+    "electron": "^4.1.4",
+    "electron-rebuild": "^1.8.5"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "electron-dl": "^1.14.0",
     "request": "^2.88.0",
-    "request-promise": "^4.2.4"
+    "request-promise": "^4.2.4",
+    "sharp": "^0.22.1"
   }
 }

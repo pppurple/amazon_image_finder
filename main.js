@@ -3,6 +3,8 @@ const { ipcMain } = require('electron')
 const cheerio = require('cheerio')
 const rp = require('request-promise')
 const { download } = require("electron-dl")
+const sharp = require('sharp')
+const fs = require('fs')
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -103,6 +105,20 @@ ipcMain.on("download", (event, info) => {
   console.log("download")
   download(BrowserWindow.getFocusedWindow(), info.url, info.opts)
     .then(downloadItem => {
-      console.log("getSavePath:" + downloadItem.getSavePath())
+      const savePath = downloadItem.getSavePath()
+      console.log("getSavePath:" + savePath)
+      if (savePath) {
+        sharp(savePath)
+          .rotate()
+          .resize({ width: 200 })
+          .toBuffer()
+          .then(data => {
+            console.log("resized! size=" + data.size + ", width=" + data.width)
+            fs.writeFileSync(savePath, data);
+          })
+          .catch(err => {
+            console.log("error! while resizing. err=" + err)
+          });
+      }
     })
 })
