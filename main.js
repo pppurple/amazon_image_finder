@@ -72,7 +72,8 @@ ipcMain.on('searchByKeyword', (event, arg) => {
 
   // replace spaces
   const query = keyword.replace(/[ 　]+/g, ' ').replace(/ /g, '+')
-  rp.get('https://www.amazon.co.jp/s?k=' + query + pageParam, options)
+  const url = 'https://www.amazon.co.jp/s?k=' + query + pageParam
+  rp.get(encodeURI(url), options)
     .then(($) => {
       const data = []
 
