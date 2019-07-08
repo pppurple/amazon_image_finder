@@ -23,6 +23,14 @@ document.querySelector('#searchBtn').addEventListener('click', () => {
   search()
 })
 
+document.querySelector('#clearBtn').addEventListener('click', () => {
+  clear()
+})
+
+clear = () => {
+  document.querySelector('#keyword').value = ""
+}
+
 ipcRenderer.on('reply', (event, resultItems) => {
   const result = document.querySelector('#result')
   // remove all child elements
