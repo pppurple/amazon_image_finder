@@ -13,15 +13,28 @@ search = (page) => {
   ipcRenderer.send('searchByKeyword', params)
 }
 
-keydown = () => {
+keydown = async () => {
   if (window.event.keyCode == 13) {
+    clearCurrentPage()
     search()
   }
 }
 
 document.querySelector('#searchBtn').addEventListener('click', () => {
+  clearCurrentPage()
   search()
 })
+
+clearCurrentPage = async () => {
+  await clearPageElem()
+}
+
+clearPageElem = async () => {
+  const currentPageElem = document.querySelector("#currentPage")
+  if (currentPageElem) {
+    currentPageElem.innerHTML = ''
+  }
+}
 
 document.querySelector('#clearBtn').addEventListener('click', () => {
   clear()
@@ -55,13 +68,13 @@ ipcRenderer.on('reply', (event, resultItems) => {
     td.setAttribute("width", "25%")
 
     // artist name
-    const artist = item.artist
+    const artist = item.artist.replace(/[\s　]+/g, ' ')
     const artistP = document.createElement("p")
     artistP.innerText = artist
     td.appendChild(artistP)
 
     // title
-    const title = item.title
+    const title = item.title.replace(/[\s　]+/g, ' ')
     const titleP = document.createElement("p")
     titleP.innerText = title
     td.appendChild(titleP)
@@ -109,12 +122,10 @@ ipcRenderer.on('reply', (event, resultItems) => {
   const previous = document.createElement("button")
   previous.setAttribute("class", "previous")
   previous.textContent = "previous"
-  previous.setAttribute("page", currentPage - 1)
 
   const next = document.createElement("button")
   next.setAttribute("class", "next")
   next.textContent = "next"
-  next.setAttribute("page", currentPage + 1)
 
   // clear
   const paging = document.querySelector('#paging')
