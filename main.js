@@ -19,7 +19,7 @@ function createWindow() {
   win.loadFile('index.html')
 
   // Open the DevTools.
-  // win.webContents.openDevTools()
+  win.webContents.openDevTools()
 
   // Emitted when the window is closed.
   win.on('closed', () => {
@@ -72,8 +72,9 @@ ipcMain.on('searchByKeyword', (event, arg) => {
 
   // replace spaces
   const query = keyword.replace(/[ 　]+/g, ' ').replace(/ /g, '+')
-  const url = 'https://www.amazon.co.jp/s?k=' + query + pageParam
-  rp.get(encodeURI(url), options)
+  const url = 'https://www.amazon.co.jp/s?k=' + encodeURIComponent(query) + pageParam
+  console.log("Get URL: " + url)
+  rp.get(url, options)
     .then(($) => {
       const data = []
 
