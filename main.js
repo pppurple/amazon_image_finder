@@ -58,13 +58,21 @@ app.on('activate', () => {
 ipcMain.on('searchByKeyword', (event, arg) => {
   const options = {
     transform: (body) => {
-      return cheerio.load(body);
+      return cheerio.load(body)
     }
-  };
+  }
+
+  const keyword = arg.keyword
+  const page = arg.page
+
+  let pageParam = ""
+  if (page && 1 < page) {
+    pageParam = "&page=" + page
+  }
 
   // replace spaces
-  const query = arg.replace(/[ 　]+/g, ' ').replace(/ /g, '+')
-  rp.get('https://www.amazon.co.jp/s?k=' + query, options)
+  const query = keyword.replace(/[ 　]+/g, ' ').replace(/ /g, '+')
+  rp.get('https://www.amazon.co.jp/s?k=' + query + pageParam, options)
     .then(($) => {
       const data = []
 
@@ -74,22 +82,20 @@ ipcMain.on('searchByKeyword', (event, arg) => {
 
         // image
         const imageUrl = $(sgColInner).find('.s-image-square-aspect').children().attr('src')
-        console.log('imageUrl: ' + imageUrl)
+        // console.log('imageUrl: ' + imageUrl)
 
         // artist, album
         const topSmall = $(sgColInner).find('.a-spacing-top-small')
         const h2Selector = $(topSmall).find('h2')
         const album = $(h2Selector).children().text().trim()
         const artist = $(h2Selector).parent().children('.a-color-secondary').text().trim()
-        console.log(artist + ' - ' + album)
+        // console.log(artist + ' - ' + album)
 
         let result = {}
         result.artist = artist
         result.title = album
         result.img = imageUrl
         data.push(result)
-
-        console.log('\n')
       })
 
       event.sender.send('reply', data)
@@ -102,23 +108,24 @@ ipcMain.on('searchByKeyword', (event, arg) => {
 })
 
 ipcMain.on("download", (event, info) => {
-  console.log("download")
   download(BrowserWindow.getFocusedWindow(), info.url, info.opts)
     .then(downloadItem => {
       const savePath = downloadItem.getSavePath()
-      console.log("getSavePath:" + savePath)
+      console.log("getSavePath=" + savePath)
+      console.log("original size=" + downloadItem.getReceivedBytes())
       if (savePath) {
+        sharp.cache(false)
         sharp(savePath)
           .rotate()
           .resize({ width: 200 })
           .toBuffer()
           .then(data => {
-            console.log("resized! size=" + data.size + ", width=" + data.width)
-            fs.writeFileSync(savePath, data);
+            console.log("resized! size=" + data.length)
+            fs.writeFileSync(savePath, data)
           })
           .catch(err => {
             console.log("error! while resizing. err=" + err)
-          });
+          })
       }
     })
 })

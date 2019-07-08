@@ -5,10 +5,12 @@ const app = require('electron').remote.app
 const { dialog } = require('electron').remote
 const clipboard = require('electron').clipboard
 
-search = () => {
+search = (page) => {
   const keyword = document.querySelector('#keyword')
-  console.log(keyword.value)
-  ipcRenderer.send('searchByKeyword', keyword.value)
+  const params = {}
+  params.page = page
+  params.keyword = keyword.value
+  ipcRenderer.send('searchByKeyword', params)
 }
 
 keydown = () => {
@@ -23,14 +25,17 @@ document.querySelector('#searchBtn').addEventListener('click', () => {
 
 ipcRenderer.on('reply', (event, resultItems) => {
   const result = document.querySelector('#result')
+  // remove all child elements
+  // result.innerHTML = ''; is slower
+  while (result.firstChild) {
+    result.removeChild(result.firstChild);
+  }
   const table = document.createElement("table")
   let tr = document.createElement("tr")
   let itemCount = 0
 
   // show result as table
   for (const item of resultItems) {
-    console.log(item)
-
     // row
     if (itemCount % 4 === 0) {
       if (itemCount !== 0) {
@@ -80,7 +85,47 @@ ipcRenderer.on('reply', (event, resultItems) => {
   table.appendChild(tr)
   result.appendChild(table)
 
-  // retain the search word
+  // paging button
+  let currentPage = 0
+  const currentPageElem = document.querySelector("#currentPage")
+  if (currentPageElem) {
+    currentPage = Number(currentPageElem.innerText)
+    console.log("currentPage! " + currentPage)
+  }
+  currentPage = currentPage + 1
+
+  const currentPageSpan = document.createElement("span")
+  currentPageSpan.setAttribute("id", "currentPage")
+  currentPageSpan.innerText = currentPage
+
+  const previous = document.createElement("button")
+  previous.setAttribute("class", "previous")
+  previous.textContent = "previous"
+  previous.setAttribute("page", currentPage - 1)
+
+  const next = document.createElement("button")
+  next.setAttribute("class", "next")
+  next.textContent = "next"
+  next.setAttribute("page", currentPage + 1)
+
+  // clear
+  const paging = document.querySelector('#paging')
+  while (paging.firstChild) {
+    paging.removeChild(paging.firstChild);
+  }
+
+  paging.appendChild(previous)
+  paging.appendChild(currentPageSpan)
+  paging.appendChild(next)
+
+  document.querySelector('.next').addEventListener('click', () => {
+    search(currentPage + 1)
+  })
+  document.querySelector('.previous').addEventListener('click', () => {
+    search(currentPage - 1)
+  })
+
+  // Retain the searching word
   // document.querySelector('#keyword').value = ""
 
   const smallImages = document.getElementsByClassName("smallImage")
