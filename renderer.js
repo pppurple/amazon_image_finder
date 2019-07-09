@@ -173,7 +173,7 @@ ipcRenderer.on('reply', (event, resultItems) => {
         }
 
         console.log("fullPath:" + fullPath)
-        const filename = fullPath.replace(/^.*[\\\/]/, '')
+        const filename = fullPath.replace(/\s+/g, '_').replace(/^.*[\\\/]/, '')
         ipcRenderer.send("download", {
           // electron-dlのsaveAs: trueでもダイアログを出すことは可能だが、
           // ディレクトリやファイル名の指定ができ無さそうなので使用しない
