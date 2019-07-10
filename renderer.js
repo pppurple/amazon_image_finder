@@ -10,6 +10,7 @@ search = (page) => {
   const params = {}
   params.page = page
   params.keyword = keyword.value
+  window.scrollTo(0, 0);
   ipcRenderer.send('searchByKeyword', params)
 }
 
