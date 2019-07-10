@@ -41,7 +41,9 @@ document.querySelector('#clearBtn').addEventListener('click', () => {
 })
 
 clear = () => {
-  document.querySelector('#keyword').value = ""
+  const keyword = document.querySelector('#keyword')
+  keyword.value = ""
+  keyword.focus()
 }
 
 ipcRenderer.on('reply', (event, resultItems) => {
@@ -51,6 +53,8 @@ ipcRenderer.on('reply', (event, resultItems) => {
   while (result.firstChild) {
     result.removeChild(result.firstChild);
   }
+
+  // create result table
   const table = document.createElement("table")
   let tr = document.createElement("tr")
   let itemCount = 0
