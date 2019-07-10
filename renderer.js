@@ -33,7 +33,7 @@ clearCurrentPage = async () => {
 clearPageElem = async () => {
   const currentPageElem = document.querySelector("#currentPage")
   if (currentPageElem) {
-    currentPageElem.innerHTML = ''
+    currentPageElem.innerHTML = 1
   }
 }
 
@@ -112,13 +112,12 @@ ipcRenderer.on('reply', (event, resultItems) => {
   result.appendChild(table)
 
   // paging button
-  let currentPage = 0
+  let currentPage = 1
   const currentPageElem = document.querySelector("#currentPage")
   if (currentPageElem) {
     currentPage = Number(currentPageElem.innerText)
-    console.log("currentPage! " + currentPage)
-  }
-  currentPage = currentPage + 1
+  }  
+  console.log("currentPage: " + currentPage)
 
   const currentPageSpan = document.createElement("span")
   currentPageSpan.setAttribute("id", "currentPage")
@@ -143,9 +142,11 @@ ipcRenderer.on('reply', (event, resultItems) => {
   paging.appendChild(next)
 
   document.querySelector('.next').addEventListener('click', () => {
+    currentPageSpan.innerText = currentPage + 1
     search(currentPage + 1)
   })
   document.querySelector('.previous').addEventListener('click', () => {
+    currentPageSpan.innerText = currentPage - 1
     search(currentPage - 1)
   })
 
