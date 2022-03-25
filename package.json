@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/pppurple/amazon_image_finder#readme",
   "devDependencies": {
-    "electron": "^4.1.4",
+    "electron": "^13.6.6",
     "electron-builder": "^21.2.0",
     "electron-rebuild": "^1.8.5"
   },
